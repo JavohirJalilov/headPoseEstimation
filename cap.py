@@ -28,7 +28,8 @@ while True:
             face_2d, face_3d, nose_2d, nose_3d = required_landmarks(face_landmarks.landmark, img_width, img_height, face_2d, face_3d)
             x, y = tuple(nose_2d)
             # draw circle on nose
-            # cv2.circle(image, (int(x), int(y)), 5, (0, 255, 0), -1)
+            for x_, y_ in face_2d:
+                cv2.circle(image, (int(x_), int(y_)), 5, (0, 255, 0), -1)
             facal_length = 1*img_width
             cam_matrix = np.array([[facal_length, 0, img_width/2],
                                       [0, facal_length, img_height/2],
@@ -45,28 +46,24 @@ while True:
             x, y, z = (angles[0]*360, angles[1]*360, angles[2]*360)
             
             # see where the user's head is tiling
-            print(x, y, z)
             txt = "Look camera"
-            if y < -3:
+            if y < -4:
                 txt = "Look left"
-            elif y > 3:
+            elif y > 4:
                 txt = "Look right"
-            elif x < -3:
+            elif x < -4:
                 txt = "Look down"
-            elif x > 3:
+            elif x > 4:
                 txt = "Look up"
 
-            # draw the face mesh annotations on the image.
-            mp.solutions.drawing_utils.draw_landmarks(image=image,
-                                                        landmark_list=face_landmarks,
-                                                        landmark_drawing_spec=drawing_spec,
-                                                        connection_drawing_spec=drawing_spec)
-
-
             # display the nose coordinates
-            nose3d_projection, jac = cv2.projectPoints(nose_3d, rotation_vector, translation_vector, cam_matrix, dist_coeffs)
+            nose2d_projection, jac = cv2.projectPoints(nose_3d, rotation_vector, translation_vector, cam_matrix, dist_coeffs)
 
-            # draw nose line
+            # find angle between nose line and x axis
+            x_angle = nose2d_projection[0][0][0] - nose_2d[0]
+            y_angle = nose2d_projection[0][0][1] - nose_2d[1]
+            angle = np.arctan2(y_angle, x_angle)
+            angle = np.degrees(angle)
 
             pt1 = (int(nose_2d[0]), int(nose_3d[1]))
             pt2 = (int(nose_2d[0] + y*10), int(nose_2d[1] - x*10))
