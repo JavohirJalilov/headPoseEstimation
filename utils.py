@@ -4,7 +4,7 @@ import mediapipe as mp
 
 
 def required_landmarks(landmarks, w, h, face_2d, face_3d):
-    # 1 nose, 33, left ear, 263 right ear, 199 chin, 61 left eye, 291 right eye
+    # 1 nose, 33, left eye, 263 right eye, 199 chin, 61 left mouth, 291 right mouth
     ids = [1, 33, 263, 61, 291, 199]
     # print(w, h)
     for idx, lm in enumerate(landmarks):
