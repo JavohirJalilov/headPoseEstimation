@@ -10,5 +10,5 @@
 ## How to use
 
 ```bash
-python main.py
+python cap.py
 ```
